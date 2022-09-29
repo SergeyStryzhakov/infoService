@@ -27,9 +27,9 @@ public class FileCreator {
 //        if (!Files.exists(Path.of(pathToSave))) {
 //            Files.createDirectory(Path.of(pathToSave));
 //        }
-        if (!Paths.get("./generated").toFile().exists()) Files.createDirectories(Paths.get("./generated"));
+        if (!Paths.get(".\\generated").toFile().exists()) Files.createDirectories(Paths.get(".\\generated"));
         String reportFileName = report.getStudentName().replace(" ", "_") + "_report";
-        String pathToReports = pathToSave + "\\" + reportFileName;
+        String pathToReports = ".\\generated" + "\\" + reportFileName;
 
         switch (format) {
             case JSON:

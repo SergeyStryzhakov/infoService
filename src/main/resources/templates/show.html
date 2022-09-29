@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<head th:include="~{fragments/header::header}"></head>
+<body>
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <!-- Brand -->
+    <a class="navbar-brand px-5" href="/show">Report Card System</a>
+
+    <!-- Toggler/collapsibe Button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+</nav>
+<div class="container-fluid pt-3">
+
+    <div class="row ml-5">
+        <div class="col">
+            <div class="h3 text-center text-primary pb-5">Students</div>
+            <div class="list-group" th:each="student, idx: ${students}">
+                <button
+                        type="button"
+                        class="list-group-item list-group-item-action students"
+                        data-toggle="button"
+                        aria-current="true"
+                        th:text="${student.lastName} + ' ' + ${student.firstName}"
+                        th:value="${student.id}">
+
+                </button>
+
+            </div>
+        </div>
+        <div class="col col-8 pl-5 pr-5">
+            <div class="h3 text-center text-primary ">Report card</div>
+            <div class="row">
+                <div id="studentName" class="h5 col text-center ">Student:</div>
+                <div id="group" class="h5 col text-center ">Group:</div>
+            </div>
+
+            <hr>
+            <table id="report" class="table table-bordered border border-secondary">
+            </table>
+            <div id="save">
+
+            </div>
+        </div>
+        <div class="col">
+            <div class="h3 text-center text-primary pb-5">Grade system</div>
+            <table class="table table-bordered border border-secondary text-center">
+                <thead>
+                <th>Value</th>
+                <th>Letter</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>5.00 - 4.01</td>
+                    <td>A</td>
+                </tr>
+                <tr>
+                    <td>4.00 - 3.01</td>
+                    <td>B</td>
+                </tr>
+                <tr>
+                    <td>3.00 - 2.01</td>
+                    <td>C</td>
+                </tr>
+                <tr>
+                    <td>< 2.00</td>
+                    <td>D</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+</body>
+<script th:inline="javascript">
+    $('button.students').on('click', function (e) {
+        let studentId = e.target.getAttribute('value');
+
+        $.ajax({
+            method: "POST",
+            URL: "/show",
+            data: {studentId: studentId},
+            success: function (response) {
+                $('#studentName').text('Student: ' + response['studentName']);
+                $('#group').text('Group: ' + response['studentGroup']);
+                let data = '<thead class="thead-dark">' +
+                    '<tr><th class="col-1">No</th>' +
+                    '<th>Subject</th><th class="text-center">Grade</th>' +
+                    '<th class="text-center">Letter</th></tr></thead><tbody>';
+                let reports = response['reports'];
+                $.each(reports, function (key) {
+                    let color = (reports[key].grade === 'A' || reports[key].grade === 'B') ?
+                        'table-success' : reports[key].grade === 'C' ?
+                            'table-warning' : reports[key].grade === 'D' ?
+                                'table-danger' : '';
+                    data += '<tr><td class="col-1">' + (1 + key)
+                        + '</td><td class="fw-bold"> '
+                        + reports[key].subjectName
+                        + '</td><td class="text-center ' + color + '">'
+                        + reports[key].markValue
+                        + '</td><td class="text-center ' + color + '">'
+                        + reports[key].grade + '</td></tr>';
+                });
+                data += '</tbody>';
+                $('#report').html(data);
+                let dataButtons = '';
+                let formats = [[${formats}]];
+                $.each(formats, function (idx) {
+                    dataButtons += "<a class=\"btn btn-outline-primary \"" +
+                        " href=/save/" + studentId + "?format=" +
+                        formats[idx] + ">" + formats[idx] + "</a>";
+                });
+                $('#save').html(dataButtons);
+
+            },
+            error: function () {
+                $('#report').addClass("text-center").html('<h3>Sorry, no data</h3>');
+            }
+        });
+
+    });
+    $('button.save').on('click', function (e) {
+        let format = e.target.getAttribute('value');
+        let studentId = e.target.getAttribute('studentId');
+        $.get("/save", {format: format, studentId: studentId})
+            .done(function (response) {
+                console.log(response);
+            });
+        // $.ajax({
+        //     method: "GET",
+        //     url: "/save",
+        //     data: {format: format, studentId: studentId},
+        //     success: function (response) {
+        //         console.log(response);
+        //         window.open(response);
+        //     },
+        //     error: function (err) {
+        //         alert("Cannot save the report card" + err);
+        //     }
+        // });
+    });
+</script>
+</html>

@@ -39,9 +39,8 @@
             <hr>
             <table id="report" class="table table-bordered border border-secondary">
             </table>
-            <div id="save">
-
-            </div>
+            <div id="save"></div>
+            <div id="result"></div>
         </div>
         <div class="col">
             <div class="h3 text-center text-primary pb-5">Grade system</div>
@@ -78,7 +77,6 @@
 <script th:inline="javascript">
     $('button.students').on('click', function (e) {
         let studentId = e.target.getAttribute('value');
-
         $.ajax({
             method: "POST",
             URL: "/show",
@@ -109,9 +107,8 @@
                 let dataButtons = '';
                 let formats = [[${formats}]];
                 $.each(formats, function (idx) {
-                    dataButtons += "<a class=\"btn btn-outline-primary \"" +
-                        " href=/save/" + studentId + "?format=" +
-                        formats[idx] + ">" + formats[idx] + "</a>";
+                    dataButtons += "<button class=\"btn btn-outline-primary save \"" +
+                        " href=# value=" + formats[idx] + " studentId=" + studentId + ">" + formats[idx] + "</button>";
                 });
                 $('#save').html(dataButtons);
 
@@ -122,25 +119,16 @@
         });
 
     });
-    $('button.save').on('click', function (e) {
+    $('#save').on('click', function (e) {
         let format = e.target.getAttribute('value');
         let studentId = e.target.getAttribute('studentId');
-        $.get("/save", {format: format, studentId: studentId})
+        $.post("/save", {format: format, studentId: studentId})
             .done(function (response) {
-                console.log(response);
+                $.each(response, function (key) {
+                    let data = "<a href=/" + key + "/" + response[key] + ">" + response[key] + "";
+                    $('#result').html(data);
+                });
             });
-        // $.ajax({
-        //     method: "GET",
-        //     url: "/save",
-        //     data: {format: format, studentId: studentId},
-        //     success: function (response) {
-        //         console.log(response);
-        //         window.open(response);
-        //     },
-        //     error: function (err) {
-        //         alert("Cannot save the report card" + err);
-        //     }
-        // });
     });
 </script>
 </html>

@@ -1,9 +1,9 @@
 package com.lab3.info.controller;
 
 
-import com.lab3.info.entity.SaveFormats;
+import com.lab3.info.util.SaveFormats;
 import com.lab3.info.service.InfoService;
-import com.lab3.info.service.ReportCardService;
+import com.lab3.info.service.CreateReportCardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +16,11 @@ import java.io.IOException;
 public class ShowReportController {
 
     private final InfoService infoService;
-    private final ReportCardService reportCardService;
+    private final CreateReportCardService reportCardService;
 
-    public ShowReportController(InfoService infoService, ReportCardService reportCardService) {
+    public ShowReportController(InfoService infoService, CreateReportCardService createReportCardService) {
         this.infoService = infoService;
-        this.reportCardService = reportCardService;
+        this.reportCardService = createReportCardService;
     }
 
     @GetMapping()

@@ -18,7 +18,7 @@ import java.util.*;
 
 
 @Service
-public class ReportCardService {
+public class CreateReportCardService {
     @Value("${api.url}")
     private String API_URL;
 

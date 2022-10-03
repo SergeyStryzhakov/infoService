@@ -1,21 +1,21 @@
 package com.lab3.info.util;
 
-
 import com.lab3.info.dto.ReportCardDTO;
 import com.lab3.info.entity.Report;
-import org.apache.poi.ss.formula.functions.Now;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.nio.file.FileSystems;
 import java.util.Date;
 
-public class WordFileCreator {
-    private ReportCardDTO report;
-    private String path;
+public class WordFileCreator implements SaveFile {
 
-    public String save(ReportCardDTO reportCard, String path) {
+    public String save(ReportCardDTO reportCard, String saveDir) throws IOException {
+        String fileName = reportCard
+                .getStudentName()
+                .replace(" ", "_") + "_report.docx";
+        String pathToSave = saveDir + FileSystems.getDefault().getSeparator() + fileName;
         XWPFDocument document = new XWPFDocument();
         XWPFParagraph paragraph = document.createParagraph();
         paragraph.setAlignment(ParagraphAlignment.CENTER);
@@ -55,21 +55,15 @@ public class WordFileCreator {
         secondP.setText("Teacher _________________________________");
         secondP.addBreak();
         XWPFParagraph thirdParagraph = document.createParagraph();
-        //thirdParagraph.setAlignment(ParagraphAlignment.RIGHT);
         XWPFRun thirdP = thirdParagraph.createRun();
         thirdP.addBreak();
         thirdP.addBreak();
         thirdP.setFontSize(10);
         thirdP.setText("Created " + new Date());
-
-        try (FileOutputStream os = new FileOutputStream(path)) {
-            document.write(os);
-            return path;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Error!";
-        }
-
+        FileOutputStream os = new FileOutputStream(pathToSave);
+        document.write(os);
+        os.close();
+        return fileName;
     }
 
     private void configureCell(XWPFTableCell cell, String data,

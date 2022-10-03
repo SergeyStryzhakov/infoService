@@ -1,4 +1,4 @@
-package com.lab3.info.entity;
+package com.lab3.info.util;
 
 public enum SaveFormats {
     JSON, XML, WORD

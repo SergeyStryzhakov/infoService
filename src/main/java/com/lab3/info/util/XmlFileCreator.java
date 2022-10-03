@@ -1,6 +1,5 @@
 package com.lab3.info.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lab3.info.dto.ReportCardDTO;
 import com.lab3.info.entity.Report;
 import org.w3c.dom.Document;
@@ -8,59 +7,50 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.FileSystems;
 import java.util.List;
 
+public class XmlFileCreator implements SaveFile {
 
-public class FileCreator {
-
-
-
-
-    private static String saveJSON(ReportCardDTO report, String pathReport) throws IOException {
-        File file = new File(pathReport + ".json");
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper
-                .writerWithDefaultPrettyPrinter()
-                .writeValue(file, report);
-        return file.getName();
-    }
-
-    public static String saveXml(ReportCardDTO report, String pathReport) throws ParserConfigurationException {
-        String fileName = pathReport + ".xml";
+    @Override
+    public String save(ReportCardDTO reportCard, String saveDir) throws ParserConfigurationException {
+        String fileName = reportCard
+                .getStudentName()
+                .replace(" ", "_") + "_report.xml";
+        String pathToSave = saveDir + FileSystems.getDefault().getSeparator() +  fileName;
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
                 .newDocument();
-        reportToXml(document, report);
-        writeToFile(fileName, document);
+        reportToXml(document, reportCard);
+        writeToFile(pathToSave, document);
         return fileName;
     }
 
-    private static void reportToXml(Document doc, ReportCardDTO report) {
+    private void reportToXml(Document doc, ReportCardDTO reportCard) {
         Element root = doc.createElement("reportDTO");
         doc.appendChild(root);
         Element elem = doc.createElement("studentName");
-        elem.setTextContent(report.getStudentName());
+        elem.setTextContent(reportCard.getStudentName());
         root.appendChild(elem);
         elem = doc.createElement("studentGroup");
-        elem.setTextContent(report.getStudentGroup());
+        elem.setTextContent(reportCard.getStudentGroup());
         root.appendChild(elem);
         elem = doc.createElement("reports");
-        addReportsList(doc, elem, report.getReports());
+        addReportsList(doc, elem, reportCard.getReports());
         root.appendChild(elem);
 
     }
 
-    private static void addReportsList(Document doc, Element root, List<Report> reports) {
+    private void addReportsList(Document doc, Element root, List<Report> reports) {
         for (Report report : reports) {
             Element rep = doc.createElement("report");
             Element elem = doc.createElement("subjectName");
@@ -76,7 +66,7 @@ public class FileCreator {
         }
     }
 
-    private static void writeToFile(String fileName, Document document) {
+    private void writeToFile(String fileName, Document document) {
         try (FileOutputStream output = new FileOutputStream(fileName)) {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -88,6 +78,4 @@ public class FileCreator {
             e.printStackTrace();
         }
     }
-
-
 }

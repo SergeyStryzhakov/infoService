@@ -1,6 +1,7 @@
 package com.lab3.info.controller;
 
-import com.lab3.info.service.SaveReportCardService;
+import com.lab3.info.exception.ReportException;
+import com.lab3.info.service.SaveReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
@@ -15,22 +16,22 @@ import java.io.IOException;
 @RequestMapping("/save")
 public class SaveReportController {
 
-    private final SaveReportCardService saveReportCardService;
+    private final SaveReportService saveReportService;
     private final ServletContext context;
 
-    public SaveReportController(SaveReportCardService saveReportCardService,
+    public SaveReportController(SaveReportService saveReportService,
                                 ServletContext context) {
-        this.saveReportCardService = saveReportCardService;
+        this.saveReportService = saveReportService;
         this.context = context;
     }
 
     @PostMapping()
     public ResponseEntity<?> saveReport(@ModelAttribute("studentId") int studentId,
                                         @ModelAttribute("format") String format)
-            throws IOException, InterruptedException, ParserConfigurationException {
+            throws IOException, InterruptedException, ParserConfigurationException, ReportException {
 
         String path = context.getRealPath("");
-        return ResponseEntity.ok(saveReportCardService.saveReportToFile(studentId, format, path));
+        return ResponseEntity.ok(saveReportService.saveReportToFile(studentId, format, path));
     }
 
 

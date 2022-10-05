@@ -37,6 +37,7 @@
             </div>
 
             <hr>
+            <div class="h4 text-center text-danger" th:if="${error}" th:text="${error}"></div>
             <table id="report" class="table table-bordered border border-secondary">
             </table>
             <div id="save"></div>
@@ -104,17 +105,21 @@
                 });
                 data += '</tbody>';
                 $('#report').html(data);
+                $('#result').html("");
                 let dataButtons = '';
                 let formats = [[${formats}]];
                 $.each(formats, function (idx) {
-                    dataButtons += "<button class=\"btn btn-outline-primary save \"" +
-                        " href=# value=" + formats[idx] + " studentId=" + studentId + ">" + formats[idx] + "</button>";
+                    dataButtons += "<button class=\"btn btn-outline-primary \"" +
+                        " href=# value=" + formats[idx] + " studentId="
+                        + studentId + ">" + formats[idx] + "</button>";
                 });
                 $('#save').html(dataButtons);
 
             },
-            error: function () {
-                $('#report').addClass("text-center").html('<h3>Sorry, no data</h3>');
+            error: function (error) {
+                $('#report').addClass("text-center")
+                    .html('<h4 class="text-danger">'
+                        + error['responseText'] + '</h4>');
             }
         });
 
@@ -125,7 +130,9 @@
         $.post("/save", {format: format, studentId: studentId})
             .done(function (response) {
                 $.each(response, function (key) {
-                    let data = "<a href=/" + key + "/" + response[key] + ">" + response[key] + "";
+                    let data = "<a href=/" + key + "/"
+                        + response[key] + " target='_blank'>"
+                        + response[key] + "</a>";
                     $('#result').html(data);
                 });
             });

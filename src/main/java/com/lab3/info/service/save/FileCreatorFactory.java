@@ -1,11 +1,8 @@
-package com.lab3.info.util;
-
-import java.io.IOException;
+package com.lab3.info.service.save;
 
 public abstract class FileCreatorFactory {
 
-
-    public static SaveFile newInstance(SaveFormats format) throws IOException {
+    public static Savable newInstance(SaveFormats format) {
         switch (format) {
             case WORD:
                 return new WordFileCreator();

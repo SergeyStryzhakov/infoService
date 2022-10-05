@@ -4,7 +4,7 @@ import com.lab3.info.entity.Report;
 
 import java.util.List;
 
-public class ReportCardDTO {
+public class ReportCardDto {
     private String studentName;
     private String studentGroup;
     private List<Report> reports;
@@ -34,29 +34,29 @@ public class ReportCardDTO {
     }
 
     public static class Builder {
-        private final ReportCardDTO reportCardDTO;
+        private final ReportCardDto reportCardDto;
 
         public Builder() {
-            this.reportCardDTO = new ReportCardDTO();
+            this.reportCardDto = new ReportCardDto();
         }
 
        public Builder studentName(String name) {
-            reportCardDTO.setStudentName(name);
+            reportCardDto.setStudentName(name);
             return this;
        }
 
         public Builder studentGroup(String group) {
-            reportCardDTO.setStudentGroup(group);
+            reportCardDto.setStudentGroup(group);
             return this;
         }
 
         public Builder reports(List<Report> reports) {
-            reportCardDTO.setReports(reports);
+            reportCardDto.setReports(reports);
             return this;
         }
 
-        public ReportCardDTO build() {
-            return reportCardDTO;
+        public ReportCardDto build() {
+            return reportCardDto;
         }
 
     }

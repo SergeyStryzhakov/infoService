@@ -1,6 +1,6 @@
-package com.lab3.info.util;
+package com.lab3.info.service.save;
 
-import com.lab3.info.dto.ReportCardDTO;
+import com.lab3.info.dto.ReportCardDto;
 import com.lab3.info.entity.Report;
 import org.apache.poi.xwpf.usermodel.*;
 
@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Date;
 
-public class WordFileCreator implements SaveFile {
+public class WordFileCreator implements Savable {
 
-    public String save(ReportCardDTO reportCard, String saveDir) throws IOException {
+    public String save(ReportCardDto reportCard, String saveDir) throws IOException {
         String fileName = reportCard
                 .getStudentName()
                 .replace(" ", "_") + "_report.docx";

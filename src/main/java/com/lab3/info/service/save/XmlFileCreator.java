@@ -1,6 +1,6 @@
-package com.lab3.info.util;
+package com.lab3.info.service.save;
 
-import com.lab3.info.dto.ReportCardDTO;
+import com.lab3.info.dto.ReportCardDto;
 import com.lab3.info.entity.Report;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.List;
 
-public class XmlFileCreator implements SaveFile {
+public class XmlFileCreator implements Savable {
 
     @Override
-    public String save(ReportCardDTO reportCard, String saveDir) throws ParserConfigurationException {
+    public String save(ReportCardDto reportCard, String saveDir) throws ParserConfigurationException {
         String fileName = reportCard
                 .getStudentName()
                 .replace(" ", "_") + "_report.xml";
@@ -35,7 +35,7 @@ public class XmlFileCreator implements SaveFile {
         return fileName;
     }
 
-    private void reportToXml(Document doc, ReportCardDTO reportCard) {
+    private void reportToXml(Document doc, ReportCardDto reportCard) {
         Element root = doc.createElement("reportDTO");
         doc.appendChild(root);
         Element elem = doc.createElement("studentName");

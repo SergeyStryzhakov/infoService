@@ -8,6 +8,8 @@ import com.lab3.info.entity.Student;
 import com.lab3.info.entity.Subject;
 import com.lab3.info.exception.ReportException;
 import com.lab3.info.util.HttpUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,26 +22,33 @@ import java.util.stream.Collectors;
 public class ReportCardService {
     @Value("${api.url}")
     private String API_URL;
+    private final Logger LOGGER = LoggerFactory.getLogger(ReportCardService.class);
 
     public ReportCardDto createDtoById(int id) throws ReportException {
         Student student = getStudent(id);
-        return new ReportCardDto.Builder()
+        ReportCardDto result = new ReportCardDto.Builder()
                 .studentName(student.getFirstName() + " " + student.getLastName())
                 .studentGroup(student.getGroupName())
                 .reports(createReportList(id))
                 .build();
+        LOGGER.info("DTO created successfully. Student id => " + id);
+        return result;
     }
 
     public List<Student> getStudents() throws ReportException {
         try {
             String response = HttpUtils.requestToApiGetMethod(API_URL + "students");
-            if(response.isEmpty()) {
-                throw  new ReportException("No student found, check URL");
+            if (response.isEmpty()) {
+                LOGGER.error("No student found, check URL => " + API_URL + "students");
+                throw new ReportException("No student found, check URL");
             }
             ObjectMapper objectMapper = new ObjectMapper();
-            return Arrays.asList(objectMapper.readValue(response, Student[].class));
+            List<Student> students = Arrays.asList(objectMapper.readValue(response, Student[].class));
+            LOGGER.info("Students list created successfully.\n Have " + students.size() + " students");
+            return students;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            LOGGER.error("Get students: " + e.getMessage(), e.getCause());
             throw new ReportException("Error during create students list");
         }
     }
@@ -69,6 +78,7 @@ public class ReportCardService {
                     .orElse(0.00);
             reports.add(new Report(subject, addAverageMark(averageMark), addGradeLetter(averageMark)));
         }
+        LOGGER.info("Report list created successfully. ");
         return reports;
     }
 
@@ -90,9 +100,13 @@ public class ReportCardService {
         try {
             String response = HttpUtils.requestToApiGetMethod(API_URL + "subjects");
             ObjectMapper objectMapper = new ObjectMapper();
-            return Arrays.asList(objectMapper.readValue(response, Subject[].class));
+            List<Subject> subjects =
+                    Arrays.asList(objectMapper.readValue(response, Subject[].class));
+            LOGGER.info("Subjects list created successfully.\n Have " + subjects.size() + " subjects");
+            return subjects;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            LOGGER.error("Get subjects: " + e.getMessage(), e.getCause());
             throw new ReportException("Error during create subject list");
         }
     }
@@ -101,9 +115,12 @@ public class ReportCardService {
         try {
             String response = HttpUtils.requestToApiGetMethod(API_URL + "students/" + id);
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response, Student.class);
+            Student student = objectMapper.readValue(response, Student.class);
+            LOGGER.info("Found student with id " + id);
+            return student;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            LOGGER.error("Get student: " + e.getMessage(), e.getCause());
             throw new ReportException("Error during search current student");
         }
     }
@@ -112,9 +129,12 @@ public class ReportCardService {
         try {
             String response = HttpUtils.requestToApiGetMethod(API_URL + "marks/student/" + id);
             ObjectMapper objectMapper = new ObjectMapper();
-            return Arrays.asList(objectMapper.readValue(response, Mark[].class));
+            List<Mark> marks = Arrays.asList(objectMapper.readValue(response, Mark[].class));
+            LOGGER.info("Marks list created successfully.\n Have " + marks.size() + " marks");
+            return marks;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            LOGGER.error("Get mark list: " + e.getMessage(), e.getCause());
             throw new ReportException("Error during create marks list");
         }
     }

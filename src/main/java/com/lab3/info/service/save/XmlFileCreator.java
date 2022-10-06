@@ -2,6 +2,9 @@ package com.lab3.info.service.save;
 
 import com.lab3.info.dto.ReportCardDto;
 import com.lab3.info.entity.Report;
+import com.lab3.info.exception.ReportException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -19,20 +22,29 @@ import java.nio.file.FileSystems;
 import java.util.List;
 
 public class XmlFileCreator implements Savable {
+    private final Logger LOGGER = LoggerFactory.getLogger(XmlFileCreator.class);
 
     @Override
-    public String save(ReportCardDto reportCard, String saveDir) throws ParserConfigurationException {
+    public String save(ReportCardDto reportCard, String saveDir) throws ReportException {
         String fileName = reportCard
                 .getStudentName()
                 .replace(" ", "_") + "_report.xml";
-        String pathToSave = saveDir + FileSystems.getDefault().getSeparator() +  fileName;
-        Document document = DocumentBuilderFactory
-                .newInstance()
-                .newDocumentBuilder()
-                .newDocument();
-        reportToXml(document, reportCard);
-        writeToFile(pathToSave, document);
-        return fileName;
+        String pathToSave = saveDir + FileSystems.getDefault().getSeparator() + fileName;
+        try {
+            Document document = DocumentBuilderFactory
+                    .newInstance()
+                    .newDocumentBuilder()
+                    .newDocument();
+            reportToXml(document, reportCard);
+            writeToFile(pathToSave, document);
+            LOGGER.info("Create file " + pathToSave + " successful");
+            return fileName;
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e.getCause());
+            throw new ReportException("Error create a file " + pathToSave);
+        }
+
     }
 
     private void reportToXml(Document doc, ReportCardDto reportCard) {

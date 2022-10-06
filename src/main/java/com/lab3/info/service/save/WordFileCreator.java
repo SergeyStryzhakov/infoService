@@ -2,16 +2,21 @@ package com.lab3.info.service.save;
 
 import com.lab3.info.dto.ReportCardDto;
 import com.lab3.info.entity.Report;
+import com.lab3.info.exception.ReportException;
 import org.apache.poi.xwpf.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Date;
 
 public class WordFileCreator implements Savable {
+    private final Logger LOGGER = LoggerFactory.getLogger(WordFileCreator.class);
 
-    public String save(ReportCardDto reportCard, String saveDir) throws IOException {
+    public String save(ReportCardDto reportCard, String saveDir) throws ReportException {
         String fileName = reportCard
                 .getStudentName()
                 .replace(" ", "_") + "_report.docx";
@@ -60,10 +65,19 @@ public class WordFileCreator implements Savable {
         thirdP.addBreak();
         thirdP.setFontSize(10);
         thirdP.setText("Created " + new Date());
-        FileOutputStream os = new FileOutputStream(pathToSave);
-        document.write(os);
-        os.close();
-        return fileName;
+        try (FileOutputStream os = new FileOutputStream(pathToSave)) {
+            document.write(os);
+            LOGGER.info("Create file " + pathToSave + " successful");
+            return fileName;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e.getCause());
+            throw new ReportException("Can`t find file " + pathToSave);
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e.getCause());
+            throw new ReportException("Error while writing a file " + pathToSave);
+        }
     }
 
     private void configureCell(XWPFTableCell cell, String data,

@@ -5,6 +5,8 @@ import com.lab3.info.exception.ReportException;
 import com.lab3.info.service.save.FileCreatorFactory;
 import com.lab3.info.service.save.Savable;
 import com.lab3.info.service.save.SaveFormats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.Map;
 public class SaveReportService {
     @Value("${save.dir}")
     private String SAVE_DIR;
+    private final Logger LOGGER = LoggerFactory.getLogger(SaveReportService.class);
     private final ReportCardService reportCardService;
 
     public SaveReportService(ReportCardService reportCardService) {
@@ -26,12 +29,19 @@ public class SaveReportService {
     }
 
     public Map<String, String> saveReportToFile(int studentId, String format, String path)
-            throws IOException, InterruptedException, ParserConfigurationException, ReportException {
+            throws ReportException {
         Map<String, String> responseMap = new HashMap<>();
         String realPathToSaveReport = path + SAVE_DIR;
 
         if (!Paths.get(realPathToSaveReport).toFile().exists()) {
-            Files.createDirectories(Paths.get(realPathToSaveReport));
+            try {
+                Files.createDirectories(Paths.get(realPathToSaveReport));
+                LOGGER.info(realPathToSaveReport + " create successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e.getCause());
+                throw new ReportException("Error create directory to save reports");
+            }
         }
         ReportCardDto reportCardDto = reportCardService.createDtoById(studentId);
         Savable factory = FileCreatorFactory.newInstance(SaveFormats.valueOf(format));

@@ -41,7 +41,7 @@
             <table id="report" class="table table-bordered border border-secondary">
             </table>
             <div id="save"></div>
-            <div id="result"></div>
+            <div id="result" class="pt-3"></div>
         </div>
         <div class="col">
             <div class="h3 text-center text-primary pb-5">Grade system</div>
@@ -109,7 +109,7 @@
                 let dataButtons = '';
                 let formats = [[${formats}]];
                 $.each(formats, function (idx) {
-                    dataButtons += "<button class=\"btn btn-outline-primary \"" +
+                    dataButtons += "<button class=\"btn btn-outline-primary me-3 \"" +
                         " href=# value=" + formats[idx] + " studentId="
                         + studentId + ">" + formats[idx] + "</button>";
                 });
@@ -130,7 +130,7 @@
         $.post("/save", {format: format, studentId: studentId})
             .done(function (response) {
                 $.each(response, function (key) {
-                    let data = "<a href=/" + key + "/"
+                    let data = "<B>Click to download => </B><a href=/" + key + "/"
                         + response[key] + " target='_blank'>"
                         + response[key] + "</a>";
                     $('#result').html(data);

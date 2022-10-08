@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,10 @@ public class ReportCardService {
             List<Student> students = Arrays.asList(objectMapper.readValue(response, Student[].class));
             LOGGER.info("Students list created successfully.\n Have " + students.size() + " students");
             return students;
+        } catch (ConnectException e) {
+            e.printStackTrace();
+            LOGGER.error("Get students: " + e.getMessage(), e.getCause());
+            throw new ReportException("Can`t connect to server");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             LOGGER.error("Get students: " + e.getMessage(), e.getCause());

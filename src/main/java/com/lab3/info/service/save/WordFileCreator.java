@@ -57,7 +57,7 @@ public class WordFileCreator implements Savable {
         XWPFRun secondP = secondParagraph.createRun();
         secondP.addBreak();
         secondP.setFontSize(18);
-        secondP.setText("Teacher _________________________________");
+        secondP.setText("Head teacher _________________________________");
         secondP.addBreak();
         XWPFParagraph thirdParagraph = document.createParagraph();
         XWPFRun thirdP = thirdParagraph.createRun();

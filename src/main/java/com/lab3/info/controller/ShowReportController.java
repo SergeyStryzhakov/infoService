@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/report")
+@RequestMapping({"/", "/report"})
 public class ShowReportController {
     private final ReportCardService reportCardService;
     private final Logger LOGGER = LoggerFactory.getLogger(ShowReportController.class);

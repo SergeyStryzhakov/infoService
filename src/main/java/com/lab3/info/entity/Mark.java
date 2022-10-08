@@ -8,18 +8,6 @@ public class Mark {
     private String created;
     private int value;
 
-    public Mark(int id, Student student, Subject subject, Teacher teacher, String created, int value) {
-        super();
-        this.id = id;
-        this.student = student;
-        this.subject = subject;
-        this.teacher = teacher;
-        this.created = created;
-        this.value = value;
-    }
-
-    public Mark() {}
-
     public Student getStudent() {
         return student;
     }

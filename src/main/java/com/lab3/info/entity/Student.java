@@ -8,19 +8,6 @@ public class Student {
     private int age;
     private String groupName;
 
-
-    public Student(int id, String firstName, String lastName, int age, String groupNumber) {
-        super();
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.groupName = groupNumber;
-    }
-
-    public Student() {
-    }
-
     public int getId() {
         return id;
     }

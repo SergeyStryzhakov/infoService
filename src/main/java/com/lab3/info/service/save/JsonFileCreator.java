@@ -19,7 +19,6 @@ public class JsonFileCreator implements Savable {
                 .getStudentName()
                 .replace(" ", "_") + "_report.json";
         String pathToSave = saveDir + FileSystems.getDefault().getSeparator() + fileName;
-
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper

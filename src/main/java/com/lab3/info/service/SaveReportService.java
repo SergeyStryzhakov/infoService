@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,6 +27,16 @@ public class SaveReportService {
         this.reportCardService = reportCardService;
     }
 
+    /**
+     * Save report file
+     *
+     * @param studentId student id
+     * @param format    format from enum
+     * @param path      path to save
+     * @return Map<String, String>: key - path to save, value - filename
+     * for creating download link in front controller
+     * @throws ReportException Common exception for front controller
+     */
     public Map<String, String> saveReportToFile(int studentId, String format, String path)
             throws ReportException {
         Map<String, String> responseMap = new HashMap<>();

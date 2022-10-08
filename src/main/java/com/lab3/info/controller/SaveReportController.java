@@ -28,8 +28,8 @@ public class SaveReportController {
     @PostMapping()
     public ResponseEntity<?> saveReport(@ModelAttribute("studentId") int studentId,
                                         @ModelAttribute("format") String format) throws ReportException {
-        LOGGER.info("Save controller started.\n " +
-                "Student id => " + studentId + " Format => " + format);
+        LOGGER.info("Save controller started. " +
+                "Student id => " + studentId + ", format => " + format);
         String path = context.getRealPath("");
         LOGGER.info("Context path => " + path);
         return ResponseEntity.ok(saveReportService.saveReportToFile(studentId, format, path));

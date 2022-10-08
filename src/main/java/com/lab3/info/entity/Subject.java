@@ -1,25 +1,9 @@
 package com.lab3.info.entity;
 
-
 public class Subject {
-
     private int id;
-
     private String title;
-
     private int hours;
-
-    //private List<Teacher> teacherList;
-
-    public Subject(int id, String title, int hours) {
-        super();
-        this.id = id;
-        this.title = title;
-        this.hours = hours;
-    }
-
-    public Subject() {
-    }
 
     public int getId() {
         return id;

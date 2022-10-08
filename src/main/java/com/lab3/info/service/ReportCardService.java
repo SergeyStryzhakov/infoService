@@ -25,6 +25,13 @@ public class ReportCardService {
     private String API_URL;
     private final Logger LOGGER = LoggerFactory.getLogger(ReportCardService.class);
 
+    /**
+     * Create DTO entity for front controller
+     *
+     * @param id student id
+     * @return DTO entity
+     * @throws ReportException Common exception for front controller
+     */
     public ReportCardDto createDtoById(int id) throws ReportException {
         Student student = getStudent(id);
         ReportCardDto result = new ReportCardDto.Builder()
@@ -36,6 +43,12 @@ public class ReportCardService {
         return result;
     }
 
+    /**
+     * Create list of student for creating buttons on the main page
+     *
+     * @return list of all student
+     * @throws ReportException Common exception for front controller
+     */
     public List<Student> getStudents() throws ReportException {
         try {
             String response = HttpUtils.requestToApiGetMethod(API_URL + "students");
@@ -45,7 +58,7 @@ public class ReportCardService {
             }
             ObjectMapper objectMapper = new ObjectMapper();
             List<Student> students = Arrays.asList(objectMapper.readValue(response, Student[].class));
-            LOGGER.info("Students list created successfully.\n Have " + students.size() + " students");
+            LOGGER.info("Students list created successfully with " + students.size() + " elements");
             return students;
         } catch (ConnectException e) {
             e.printStackTrace();
@@ -107,7 +120,7 @@ public class ReportCardService {
             ObjectMapper objectMapper = new ObjectMapper();
             List<Subject> subjects =
                     Arrays.asList(objectMapper.readValue(response, Subject[].class));
-            LOGGER.info("Subjects list created successfully.\n Have " + subjects.size() + " subjects");
+            LOGGER.info("Subjects list created successfully with " + subjects.size() + " elements");
             return subjects;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -135,7 +148,7 @@ public class ReportCardService {
             String response = HttpUtils.requestToApiGetMethod(API_URL + "marks/student/" + id);
             ObjectMapper objectMapper = new ObjectMapper();
             List<Mark> marks = Arrays.asList(objectMapper.readValue(response, Mark[].class));
-            LOGGER.info("Marks list created successfully.\n Have " + marks.size() + " marks");
+            LOGGER.info("Marks list created successfully with " + marks.size() + " elements");
             return marks;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

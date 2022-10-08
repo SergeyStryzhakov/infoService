@@ -2,27 +2,11 @@ package com.lab3.info.entity;
 
 
 public class Teacher {
-
     private int id;
-
     private String firstName;
-
     private String lastName;
-
     private float salary;
-
     private Subject subject;
-
-    public Teacher(int id, String firstName, String lastName, float salary, Subject subject) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.salary = salary;
-        this.subject = subject;
-    }
-
-    public Teacher() {
-    }
 
     public int getId() {
         return id;
@@ -48,7 +32,7 @@ public class Teacher {
         this.lastName = lastName;
     }
 
-       public float getSalary() {
+    public float getSalary() {
         return salary;
     }
 
